@@ -112,7 +112,19 @@
         const totalFlowers = 8;
 
         boton.addEventListener('click', () => {
+            musiquitademilo.volume = 0;
             musiquitademilo.play(); 
+
+            const intervaloFade = setInterval(() => {
+            // Si el volumen es menor a 1 (100%), le sumamos 0.05
+            if (musiquitademilo.volume < 0.95) {
+            musiquitademilo.volume += 0.05;
+            } else {
+            // Cuando llega al máximo, limpiamos el intervalo para que se detenga
+            musiquitademilo.volume = 1;
+            clearInterval(intervaloFade);
+            }
+            }, 100);
         });
 
         for (let i = 0; i < totalFlowers; i++) {
