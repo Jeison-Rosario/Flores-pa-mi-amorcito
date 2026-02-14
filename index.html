@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="./flower-bouquet.png">
+    <title>Flores pa mi amorcito</title>
+    <!-- 1. CSS de Bootstrap (Obligatorio para el diseño) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --lily-white: #ffffff; --lily-pink: #ffb7c5; --tulip-red: #ff4d4d;
+            --center-yellow: #ffd700; --stem-color: #4c8c4a;
+            --ribbon-color: #e91e63; --sparkle-color: #fff176;
+        }
+        body { background: radial-gradient(#f08bb1 100%); overflow: hidden; font-family: 'Georgia', serif; height: 100vh; margin: 0; }
+        .bouquet-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .bouquet { position: relative; width: 450px; height: 450px; display: flex; justify-content: center; align-items: center; }
+
+        /* Estructura en X */
+        .flower-unit { position: absolute; height: 380px; display: flex; flex-direction: column; align-items: center; transform-origin: center center; }
+        .stem { width: 5px; height: 100%; background: var(--stem-color); border-radius: 5px; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+        .flower-head { position: absolute; top: -25px; width: 60px; height: 60px; z-index: 10; }
+        .petal { position: absolute; left: 50%; bottom: 50%; transform-origin: bottom center; opacity: 0; animation: bloom 2s ease-out forwards; }
+        .petal-lily { width: 30px; height: 80px; background: linear-gradient(to bottom, var(--f-color), #f9f9f9); border-radius: 50% 50% 10% 10% / 80% 80% 20% 20%; }
+        .petal-tulip { width: 40px; height: 70px; background: linear-gradient(to bottom, var(--f-color), #b02a2a); border-radius: 40% 40% 30% 30%; }
+        .center { position: absolute; width: 14px; height: 14px; background: var(--center-yellow); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 11; }
+
+        /* Lazo y Tarjeta */
+        .ribbon { position: absolute; top: 50%; width: 45px; height: 28px; background: var(--ribbon-color); z-index: 25; border-radius: 4px; opacity: 0; animation: appear 1s ease-out 2s forwards; transform: translate(-50%, -50%); }
+        .ribbon::before, .ribbon::after { content: ''; position: absolute; width: 38px; height: 28px; border: 6px solid var(--ribbon-color); border-radius: 50%; top: -6px; }
+        .ribbon::before { left: -28px; transform: rotate(-25deg); }
+        .ribbon::after { right: -28px; transform: rotate(25deg); }
+        .gift-card { position: absolute; bottom: 40px; width: 300px; padding: 15px; background: #fff9e6; border-radius: 8px; text-align: center; opacity: 0; z-index: 100; border: 2px solid #d4af37; animation: cardAppear 1.5s ease-out 2s forwards; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+
+        /* Marco del Álbum */
+        .carousel-container { border: 10px solid #fff9e6; border-radius: 15px; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .carousel-container::before, .carousel-container::after { content: '✿'; position: absolute; font-size: 55px; z-index: 100; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+        .carousel-container::before { top: -30px; left: -30px; color: var(--lily-pink); transform: rotate(-15deg); }
+        .carousel-container::after { bottom: -30px; right: -30px; color: var(--tulip-red); content: '❀'; transform: rotate(15deg); }
+
+        .sparkle { position: absolute; width: 4px; height: 4px; background: var(--sparkle-color); border-radius: 50%; z-index: 150; animation: fall linear forwards; }
+        @keyframes bloom { 0% { transform: translateX(-50%) scale(0); opacity: 0; } 100% { transform: translateX(-50%) scale(1) rotate(var(--angle)); opacity: 1; } }
+        @keyframes cardAppear { to { opacity: 1; transform: translateY(-110px); } }
+        @keyframes appear { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fall { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(250px); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    
+        
+    <audio id="musiquitademilo" autoplay loop>
+        <source src="./Milo j - Morocha.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="bouquet-wrapper">
+        <div class="bouquet" id="bouquet">
+            <div class="ribbon"></div>
+        </div>
+        
+        <div class="gift-card">
+            <h6 style="color:#e91e63; margin-bottom: 5px;">Feliz San Valentin, mi amor!❤️‍🔥</h6>
+            <p style="margin-bottom:10px; font-size: 0.9rem; color: #444;">Decirte que te amo es algo diminuto comparado con lo que realmente siento por ti. Tú no eres solo el amor de mi vida, tú eres el amor de mi infinita eternidad, el que quiero tatuado en el alma más allá de cada vida que exista.</p>
+            <!-- BOTÓN CORREGIDO CON data-bs-toggle -->
+            <button id="boton" class="btn btn-sm btn-danger w-100" style="border-radius:20px;" 
+                    data-bs-toggle="modal" data-bs-target="#albumModal">
+                Ver Álbum 📸
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL DEL ÁLBUM -->
+    <div class="modal fade" id="albumModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-transparent border-0">
+                <div class="modal-body p-0">
+                    <div class="carousel-container">
+                        <div id="carouselF" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner rounded">
+                                <div class="carousel-item active" data-bs-interval="5000"><img src="./img/IMG_0258.JPG.jpeg" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0275.JPG.jpeg" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0248.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0033.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0046.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0072.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0073.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0096.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0116.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0179.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0183.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0204.HEIC" class="d-block w-100"></div>
+                                <div class="carousel-item" data-bs-interval="5000"><img src="./img/IMG_0219.HEIC" class="d-block w-100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. JS de Bootstrap (Indispensable para que el botón funcione) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const boton = document.getElementById('boton');
+        const musica = document.getElementById('musiquitademilo');
+        const bouquet = document.getElementById('bouquet');
+        const totalFlowers = 8;
+
+        boton.addEventListener('click', () => {
+            musiquitademilo.play(); 
+        });
+
+        for (let i = 0; i < totalFlowers; i++) {
+            const unit = document.createElement('div');
+            unit.className = 'flower-unit';
+            const isTulip = i % 2 !== 0;
+            let fColor = isTulip ? 'var(--tulip-red)' : (i % 4 === 0 ? 'var(--lily-white)' : 'var(--lily-pink)');
+            unit.style.transform = `rotate(${(i - (totalFlowers - 1) / 2) * 18}deg)`;
+
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            unit.appendChild(stem);
+
+            const head = document.createElement('div');
+            head.className = 'flower-head';
+            head.style.setProperty('--f-color', fColor);
+            
+            if (!isTulip) {
+                const center = document.createElement('div');
+                center.className = 'center';
+                head.appendChild(center);
+            }
+
+            const petals = isTulip ? 4 : 6;
+            for (let j = 0; j < petals; j++) {
+                const p = document.createElement('div');
+                p.className = `petal ${isTulip ? 'petal-tulip' : 'petal-lily'}`;
+                p.style.setProperty('--angle', `${isTulip ? (j * 25 - 35) : (j * 60)}deg`);
+                p.style.animationDelay = `${(i * 0.4) + (j * 0.1)}s`;
+                head.appendChild(p);
+            }
+            unit.appendChild(head);
+            bouquet.appendChild(unit);
+        }
+
+        function createSparkle() {
+            const s = document.createElement('div');
+            s.className = 'sparkle';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = '25%';
+            s.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+            bouquet.appendChild(s);
+            setTimeout(() => s.remove(), 3000);
+        }
+        setTimeout(() => setInterval(createSparkle, 200), 5500);
+    </script>
+</body>
+</html>
